@@ -1,33 +1,30 @@
-import { CalculatorService as CalculatorServiceType } from "./types";
+import { CalculatorService as CalculatorServiceType } from "../types/types";
 
 export default class CalculatorService implements CalculatorServiceType {
   private displayValue: string = "0";
   private firstOperand: number | null = null;
   private waitingForOperand: boolean = false;
   private operator: string | null = null;
-  private callback: any;
+  private callback: (value: string) => void;
 
-  constructor(callback: any) {
+  constructor(callback: (value: string) => void) {
     this.callback = callback;
   }
 
-  // Handle digit or dot input
-  public inputDigit(digit: any): void {
+  public inputDigit(digit: string){
     if (this.waitingForOperand) {
-      this.displayValue = digit === "." ? "0." : digit;
+      this.displayValue = digit;
       this.waitingForOperand = false;
     } else {
-      if (digit === "." && this.displayValue.includes(".")) return;
       this.displayValue =
-        this.displayValue === "0" && digit !== "."
+        this.displayValue === "0"
           ? digit
           : this.displayValue + digit;
     }
     this.callback(this.displayValue);
   }
 
-  // Handle operator input
-  public inputOperator(nextOperator: any): void {
+  public inputOperator(nextOperator: string) {
     const inputValue = parseFloat(this.displayValue);
     if (this.firstOperand === null) {
       this.firstOperand = inputValue;
@@ -41,8 +38,7 @@ export default class CalculatorService implements CalculatorServiceType {
     this.waitingForOperand = true;
   }
 
-  // Perform calculation
-  private performOperation(first: number, second: number, operator: string): number {
+  private performOperation(first: number, second: number, operator: string) {
     switch (operator) {
       case "+":
         return first + second;
@@ -57,21 +53,19 @@ export default class CalculatorService implements CalculatorServiceType {
     }
   }
 
-  // Handle equals
-  public inputEquals(): void {
+  public inputEquals() {
     if (this.operator && this.firstOperand !== null) {
       const inputValue = parseFloat(this.displayValue);
       const result = this.performOperation(this.firstOperand, inputValue, this.operator);
       this.displayValue = String(result);
       this.firstOperand = null;
       this.operator = null;
-      this.waitingForOperand = false;
+      this.waitingForOperand = true;
       this.callback(this.displayValue);
     }
   }
 
-  // Clear all state
-  public clear(): void {
+  public clear() {
     this.displayValue = "0";
     this.firstOperand = null;
     this.operator = null;
@@ -79,13 +73,7 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback(this.displayValue);
   }
 
-  // Get current display value
-  public getDisplayValue(): string {
-    return this.displayValue;
-  }
-
-  // Main handler for key input
-  public handleKey = (key: any): void => {
+  public handleKey = (key: string) => {
     if (/^[0-9]$/.test(key) || key === ".") {
       this.inputDigit(key);
     } else if (["+", "-", "*", "/"].includes(key)) {
