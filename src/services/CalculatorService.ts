@@ -12,59 +12,60 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback = callback;
   }
 
-  public inputDigit(digit: string) {
-    if (digit === ".") {
-      if (this.waitingForOperand) {
-        this.displayValue = "0.";
-        this.waitingForOperand = false;
-      } else if (!this.displayValue.includes(".")) {
-        this.displayValue += ".";
-      }
-    } else {
-      if (this.waitingForOperand) {
-        this.displayValue = digit;
-        this.waitingForOperand = false;
-      } else {
-        this.displayValue =
-          this.displayValue === "0" ? digit : this.displayValue + digit;
-      }
+  public inputDigit(digit: string): void {
+    if (this.waitingForOperand) {
+      this.displayValue = digit === "." ? "0." : digit;
+      this.waitingForOperand = false;
+    } else if (digit === "." && !this.displayValue.includes(".")) {
+      this.displayValue += ".";
+    } else if (digit !== ".") {
+      this.displayValue =
+        this.displayValue === "0" ? digit : this.displayValue + digit;
     }
 
     this.updateFormula();
   }
 
-  private updateFormula() {
-    if (!this.operator) {
-      this.formula = this.displayValue;
-    } else {
-      const parts = this.formula.split(/[-+*/]/);
-      parts[parts.length - 1] = this.displayValue;
-      this.formula = parts.join(this.operator ?? "");
-    }
+  private updateFormula(): void {
+    this.formula = this.operator
+      ? this.formula
+          .split(/[-+*/]/)
+          .slice(0, -1)
+          .concat(this.displayValue)
+          .join(this.operator)
+      : this.displayValue;
+
     this.callback(this.formula);
   }
 
-  public inputOperator(nextOperator: string) {
-    if (this.operator && !this.waitingForOperand) {
-      const result = this.performOperation(
-        this.firstOperand!,
+  public inputOperator(nextOperator: string): void {
+    if (
+      this.operator &&
+      !this.waitingForOperand &&
+      this.firstOperand !== null
+    ) {
+      this.firstOperand = this.performOperation(
+        this.firstOperand,
         parseFloat(this.displayValue),
         this.operator
       );
-      this.firstOperand = result;
-      this.displayValue = String(result);
-      this.formula = String(result) + nextOperator;
+      this.displayValue = String(this.firstOperand);
     } else {
       this.firstOperand = parseFloat(this.displayValue);
-      this.formula = this.displayValue + nextOperator;
     }
+
     this.operator = nextOperator;
     this.waitingForOperand = true;
-
+    this.formula = this.displayValue + nextOperator;
+    
     this.callback(this.formula);
   }
 
-  private performOperation(first: number, second: number, operator: string) {
+  private performOperation(
+    first: number,
+    second: number,
+    operator: string
+  ): number {
     switch (operator) {
       case "+":
         return first + second;
@@ -79,7 +80,7 @@ export default class CalculatorService implements CalculatorServiceType {
     }
   }
 
-  public inputEquals() {
+  public inputEquals(): void {
     if (this.operator && this.firstOperand !== null) {
       const result = this.performOperation(
         this.firstOperand,
@@ -95,7 +96,7 @@ export default class CalculatorService implements CalculatorServiceType {
     }
   }
 
-  public clear() {
+  public clear(): void {
     this.displayValue = "0";
     this.formula = "0";
     this.firstOperand = null;
@@ -104,15 +105,10 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback(this.displayValue);
   }
 
-  public handleKey = (key: string) => {
-    if (!isNaN(Number(key)) || key === ".") {
-      this.inputDigit(key);
-    } else if (["+", "-", "*", "/"].includes(key)) {
-      this.inputOperator(key);
-    } else if (key === "=") {
-      this.inputEquals();
-    } else if (key === "C") {
-      this.clear();
-    }
+  public handleKey = (key: string): void => {
+    if (!isNaN(Number(key)) || key === ".") this.inputDigit(key);
+    else if (["+", "-", "*", "/"].includes(key)) this.inputOperator(key);
+    else if (key === "=") this.inputEquals();
+    else if (key === "C") this.clear();
   };
 }

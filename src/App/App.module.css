@@ -1,7 +1,6 @@
 .calculator {
   width: 100vw;
   height: 100vh;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,7 +28,7 @@
   }
 }
 
-@media screen and (min-width: 834px) {
+@media screen and (min-width: 1440px) {
   .calculator {
     width: 400px;
     height: 540px;
