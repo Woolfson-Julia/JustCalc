@@ -1,12 +1,14 @@
 import React from "react";
 
+import css from "./Display.module.css"
+
 interface DisplayProps {
   value: string;
 }
 
 const Display: React.FC<DisplayProps> = ({ value }) => (
-  <div className="calculator-display">
-    <div className="calculator-input">{value}</div>
+  <div className={css.calculator__display}>
+    <div className={css.calculator__formula}>{value}</div>
   </div>
 );
 

@@ -1,4 +1,4 @@
 export interface CalculatorService {
-  handleKey?: (key: any) => void;
+  handleKey: (key: string) => void;
 }
 export type displayValue = string & { __brand: "displayValue" };

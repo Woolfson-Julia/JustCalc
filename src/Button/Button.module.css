@@ -1,0 +1,68 @@
+.button {
+  width: 72px;
+  height: 72px;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--color-black);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-btn);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  padding: 20px;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  color: var(--color-black);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-btn);
+}
+
+.button-0,
+.button-1,
+.button-2,
+.button-3,
+.button-4,
+.button-5,
+.button-6,
+.button-7,
+.button-8,
+.button-9,
+.button-dot {
+  background: var(--color-number);
+}
+
+.button-C {
+  background: var(--color-action);
+  box-shadow: var(--shadow-btn-action);
+  color: var(--color-display-formula);
+}
+
+.button:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-btn-active);
+}
+
+@media screen and (min-width: 834px) {
+  .button {
+    width: 76px;
+    height: 76px;
+    padding: 20px;
+    font-size: 24px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .button {
+    font-size: 28px;
+  }
+}
