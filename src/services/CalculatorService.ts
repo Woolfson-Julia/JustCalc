@@ -57,7 +57,7 @@ export default class CalculatorService implements CalculatorServiceType {
     this.operator = nextOperator;
     this.waitingForOperand = true;
     this.formula = this.displayValue + nextOperator;
-    
+
     this.callback(this.formula);
   }
 
@@ -105,10 +105,23 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback(this.displayValue);
   }
 
+  private deleteLastDigit(): void {
+    if (this.waitingForOperand) return;
+
+    if (this.displayValue.length > 1) {
+      this.displayValue = this.displayValue.slice(0, -1);
+    } else {
+      this.displayValue = "0";
+    }
+
+    this.updateFormula();
+  }
+
   public handleKey = (key: string): void => {
     if (!isNaN(Number(key)) || key === ".") this.inputDigit(key);
     else if (["+", "-", "*", "/"].includes(key)) this.inputOperator(key);
     else if (key === "=") this.inputEquals();
     else if (key === "C") this.clear();
+    else if (key === "←" || key === "Escape" || key === "Backspace") this.deleteLastDigit();
   };
 }

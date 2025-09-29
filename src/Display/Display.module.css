@@ -17,7 +17,7 @@
   max-width: 320px;
   font-size: 30px;
   color: var(--color-display-formula);
-  display: block;
+  display: flex;
   white-space: nowrap;
   overflow: hidden;
   text-align: right;
