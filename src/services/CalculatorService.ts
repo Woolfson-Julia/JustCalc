@@ -18,19 +18,19 @@ export default class CalculatorService implements CalculatorServiceType {
     const valueHasDot = this.displayValue.includes(dot);
 
     if (this.waitingForOperand) {
-      this.displayValue = isDot
-        ? `${this.displayValue}${valueHasDot}`
-          ? ""
-          : `${dot}`
-        : digit;
-      this.waitingForOperand = false;
+    this.displayValue = isDot ? "0." : digit;
+    this.waitingForOperand = false;
+  } else {
+    if (isDot && valueHasDot) return;
+    if (this.displayValue === "0" && !isDot) {
+      this.displayValue = digit;
     } else {
-      this.displayValue =
-        this.displayValue === "0" ? digit : `${this.displayValue}${digit}`;
+      this.displayValue += digit;
     }
-
-    this.updateFormula();
   }
+
+  this.updateFormula();
+}
 
   private updateFormula(): void {
     this.formula = this.operator
