@@ -1,8 +1,8 @@
 .button {
   width: 72px;
   height: 72px;
-  padding: 20px;
-  font-size: 24px;
+  font-size: var(--btn-font-size-mobile);
+  padding: var(--btn-padding);
   font-weight: bold;
   border: none;
   cursor: pointer;
@@ -14,7 +14,6 @@
   justify-content: center;
   align-items: center;
 }
-
 
 .button-0,
 .button-1,
@@ -49,13 +48,12 @@
   .button {
     width: 76px;
     height: 76px;
-    padding: 20px;
-    font-size: 24px;
+    font-size: var(--btn-font-size-mobile);
   }
 }
 
 @media screen and (min-width: 1440px) {
   .button {
-    font-size: 28px;
+    font-size: var(--btn-font-size-desktop);
   }
 }

@@ -22,5 +22,19 @@ code {
   --shadow-btn: 0 4px #999;
   --shadow-btn-active: 0 2px #666;
   --shadow-btn-action: 0 4px #94493a;
+
+
+  --btn-font-size-mobile: 24px;
+  --btn-font-size-desktop: 28px;
+  --btn-padding: 20px;
+
+  --display-font-size-mobile: 30px;
+  --display-font-size-tablet: 18px;
+  --display-font-size-desktop: 22px;
+  --display-padding-mobile: 10px;
+  --display-padding-tablet: 15px;
+
+  --calculator-padding-mobile: 20px;
+  --calculator-padding-desktop: 15px;
 }
 

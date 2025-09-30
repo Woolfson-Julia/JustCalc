@@ -12,20 +12,21 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback = callback;
   }
 
-  public inputDigit(digit: string): void {
+  private inputDigit(digit: string): void {
+    const dot = ".";
+    const isDot = digit === dot;
+    const valueHasDot = this.displayValue.includes(dot);
+
     if (this.waitingForOperand) {
-      this.displayValue = digit === "." ? "0." : digit;
+      this.displayValue = isDot
+        ? `${this.displayValue}${valueHasDot}`
+          ? ""
+          : `${dot}`
+        : digit;
       this.waitingForOperand = false;
-      this.updateFormula();
-      return;
-    }
-    if (digit === ".") {
-      if (!this.displayValue.includes(".")) {
-        this.displayValue += ".";
-      }
     } else {
       this.displayValue =
-        this.displayValue === "0" ? digit : this.displayValue + digit;
+        this.displayValue === "0" ? digit : `${this.displayValue}${digit}`;
     }
 
     this.updateFormula();
@@ -39,7 +40,7 @@ export default class CalculatorService implements CalculatorServiceType {
     this.callback(this.formula);
   }
 
-  public inputOperator(nextOperator: string): void {
+  private inputOperator(nextOperator: string): void {
     if (
       this.operator &&
       !this.waitingForOperand &&
@@ -81,36 +82,34 @@ export default class CalculatorService implements CalculatorServiceType {
     }
   }
 
-  public inputEquals(): void {
+  private inputEquals(): void {
     if (this.operator && this.firstOperand !== null) {
       const result = this.performOperation(
         this.firstOperand,
         parseFloat(this.displayValue),
         this.operator
       );
-      this.displayValue = String(result);
-      this.formula = this.displayValue;
-      this.firstOperand = null;
-      this.operator = null;
-      this.waitingForOperand = true;
-      
-      this.callback(this.displayValue);
+      this.resetTo(result);
     }
   }
 
-  public clear(): void {
-    this.displayValue = "0";
-    this.formula = "0";
+  private clear(): void {
+    this.resetTo("0");
+  }
+
+  private resetTo(value: string | number): void {
+    this.displayValue = String(value);
+    this.formula = String(value);
     this.firstOperand = null;
     this.operator = null;
     this.waitingForOperand = false;
+
     this.callback(this.displayValue);
   }
 
   private deleteLastDigit(): void {
     this.waitingForOperand = false;
-    this.displayValue =
-      this.displayValue.length > 1 ? this.displayValue.slice(0, -1) : "0";
+    this.displayValue = this.displayValue.slice(0, -1) || "0";
 
     this.updateFormula();
   }
