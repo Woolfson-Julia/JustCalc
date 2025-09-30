@@ -16,9 +16,14 @@ export default class CalculatorService implements CalculatorServiceType {
     if (this.waitingForOperand) {
       this.displayValue = digit === "." ? "0." : digit;
       this.waitingForOperand = false;
-    } else if (digit === "." && !this.displayValue.includes(".")) {
-      this.displayValue += ".";
-    } else if (digit !== ".") {
+      this.updateFormula();
+      return;
+    }
+    if (digit === ".") {
+      if (!this.displayValue.includes(".")) {
+        this.displayValue += ".";
+      }
+    } else {
       this.displayValue =
         this.displayValue === "0" ? digit : this.displayValue + digit;
     }
@@ -28,11 +33,7 @@ export default class CalculatorService implements CalculatorServiceType {
 
   private updateFormula(): void {
     this.formula = this.operator
-      ? this.formula
-          .split(/[-+*/]/)
-          .slice(0, -1)
-          .concat(this.displayValue)
-          .join(this.operator)
+      ? `${this.firstOperand ?? ""}${this.operator}${this.displayValue}`
       : this.displayValue;
 
     this.callback(this.formula);
@@ -56,7 +57,7 @@ export default class CalculatorService implements CalculatorServiceType {
 
     this.operator = nextOperator;
     this.waitingForOperand = true;
-    this.formula = this.displayValue + nextOperator;
+    this.formula = `${this.displayValue}${nextOperator}`;
 
     this.callback(this.formula);
   }
@@ -92,6 +93,7 @@ export default class CalculatorService implements CalculatorServiceType {
       this.firstOperand = null;
       this.operator = null;
       this.waitingForOperand = true;
+      
       this.callback(this.displayValue);
     }
   }
@@ -106,13 +108,9 @@ export default class CalculatorService implements CalculatorServiceType {
   }
 
   private deleteLastDigit(): void {
-    if (this.waitingForOperand) return;
-
-    if (this.displayValue.length > 1) {
-      this.displayValue = this.displayValue.slice(0, -1);
-    } else {
-      this.displayValue = "0";
-    }
+    this.waitingForOperand = false;
+    this.displayValue =
+      this.displayValue.length > 1 ? this.displayValue.slice(0, -1) : "0";
 
     this.updateFormula();
   }
@@ -122,6 +120,6 @@ export default class CalculatorService implements CalculatorServiceType {
     else if (["+", "-", "*", "/"].includes(key)) this.inputOperator(key);
     else if (key === "=") this.inputEquals();
     else if (key === "C") this.clear();
-    else if (key === "←" || key === "Escape" || key === "Backspace") this.deleteLastDigit();
+    else if (["←", "Escape", "Backspace"].includes(key)) this.deleteLastDigit();
   };
 }

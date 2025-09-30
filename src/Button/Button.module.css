@@ -15,17 +15,6 @@
   align-items: center;
 }
 
-.button {
-  padding: 20px;
-  border-radius: 50%;
-  font-size: 24px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  color: var(--color-black);
-  transition: all 0.2s;
-  box-shadow: var(--shadow-btn);
-}
 
 .button-0,
 .button-1,
